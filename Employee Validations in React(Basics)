@@ -1,0 +1,154 @@
+import React, { useState } from "react";
+
+function EmployeeValidationForm() {
+  const [user, setUser] = useState({
+    name: "",
+    email: "",
+    employeeId: "",
+    joiningDate: "",
+  });
+  const [error, setError] = useState({
+    name:'Name must be at least 4 characters long and only contain letters and spaces.',
+    email:"Email must be a valid email address.",
+    employeeId:"Employee ID must be exactly 6 digits.",
+    joiningDate:"Joining Date cannot be in the future."
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUser({ ...user, [name]: value });
+
+    // Validation logic
+    let errors = { ...error };
+
+    if (name === "name") {
+      if (!/^[A-Za-z\s]{4,}$/.test(value)) {
+        errors.name = "Name must be at least 4 characters long and only contain letters and spaces.";
+      } else {
+        delete errors.name;
+      }
+    }
+
+    if (name === "email") {
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+        errors.email = "Email must be a valid email address.";
+      } else {
+        delete errors.email;
+      }
+    }
+
+    if (name === "employeeId") {
+      if (!/^\d{6}$/.test(value)) {
+        errors.employeeId = "Employee ID must be exactly 6 digits.";
+      } else {
+        delete errors.employeeId;
+      }
+    }
+
+    if (name === "joiningDate") {
+      const today = new Date();
+      const selectedDate = new Date(value);
+      if (selectedDate > today) {
+        errors.joiningDate = "Joining Date cannot be in the future.";
+      } else {
+        delete errors.joiningDate;
+      }
+    }
+
+    setError(errors);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Check for any remaining errors before submission
+    if (Object.keys(error).length === 0) {
+      alert("Form submitted successfully!");
+      console.log(user);
+      setUser({
+        name: "",
+        email: "",
+        employeeId: "",
+        joiningDate: "",
+      });
+    } else {
+      alert("Please fix the errors before submitting.");
+      setUser({
+        name: "",
+        email: "",
+        employeeId: "",
+        joiningDate: "",
+      });
+    }
+  };
+console.log(user.name)
+  return (
+    <div className="layout-column align-items-center mt-20">
+      <form onSubmit={handleSubmit} className="w-50">
+        {/* Name Input */}
+        <div className="layout-column align-items-start mb-10" data-testid="input-name">
+          <input
+            className="w-100"
+            type="text"
+            name="name"
+            value={user?.name || ""}
+            placeholder="Name"
+            data-testid="input-name-test"
+            onChange={handleChange}
+          />
+          {error.name && <p className="error mt-2" style={{color:'red'}}>{error.name}</p>}
+        </div>
+
+        {/* Email Input */}
+        <div className="layout-column align-items-start mb-10" data-testid="input-email">
+          <input
+            className="w-100"
+            type="text"
+            name="email"
+            value={user?.email || ""}
+            placeholder="Email"
+            onChange={handleChange}
+          />
+          {error.email && <p className="error mt-2" style={{color:'red'}}>{error.email}</p>}
+        </div>
+
+        {/* Employee ID Input */}
+        <div className="layout-column align-items-start mb-10" data-testid="input-employee-id">
+          <input
+            className="w-100"
+            type="text"
+            name="employeeId"
+            value={user?.employeeId || ""}
+            placeholder="Employee ID"
+            onChange={handleChange}
+          />
+          {error.employeeId && <p className="error mt-2" style={{color:'red'}}>{error.employeeId}</p>}
+        </div>
+
+        {/* Joining Date Input */}
+        <div className="layout-column align-items-start mb-10" data-testid="input-joining-date">
+          <input
+            className="w-100"
+            type="date"
+            name="joiningDate"
+            value={user?.joiningDate || ""}
+            placeholder="Joining Date"
+            onChange={handleChange}
+          />
+          {error.joiningDate && <p className="error mt-2" style={{color:'red'}}>{error.joiningDate}</p>}
+        </div>
+
+        {/* Submit Button */}
+        <button
+          data-testid="submit-btn"
+          type="submit"
+          disabled={Object.keys(error).length != 0}
+        >
+          Submit
+        </button>
+      </form>
+    </div>
+  );
+}
+
+export default EmployeeValidationForm;
