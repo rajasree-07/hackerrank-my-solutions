@@ -1,2 +1,4 @@
-# hackerrank-my-solutions
-credits given to hackerrank 
+# hackerrank solutions
+sql basic solutions
+problem solving solutions
+data structure and algorithms
